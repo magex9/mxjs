@@ -1,10 +1,10 @@
 package ca.magex.mxjs.util;
 
-import ca.magex.mxjs.model.DataObject;
+import ca.magex.json.model.DataObject;
 
 public interface Transformer<T extends Object> {
 	
-	public Class<?> getType();
+	public Class<T> getType();
 	
 	public DataObject format(T obj);
 	

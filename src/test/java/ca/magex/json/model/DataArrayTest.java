@@ -1,4 +1,4 @@
-package ca.magex.crm.mapping.json;
+package ca.magex.json.model;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ca.magex.mxjs.model.DataArray;
-import ca.magex.mxjs.model.DataElement;
-import ca.magex.mxjs.model.DataFormatter;
-import ca.magex.mxjs.model.DataParser;
-import ca.magex.mxjs.model.DataText;
+import ca.magex.json.model.DataArray;
+import ca.magex.json.model.DataElement;
+import ca.magex.json.model.DataFormatter;
+import ca.magex.json.model.DataParser;
+import ca.magex.json.model.DataText;
 
 public class DataArrayTest {
 

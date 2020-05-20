@@ -1,4 +1,4 @@
-package ca.magex.mxjs.model;
+package ca.magex.json.model;
 
 import static org.apache.commons.lang3.StringUtils.leftPad;
 

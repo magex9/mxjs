@@ -1,4 +1,4 @@
-package ca.magex.mxjs.model;
+package ca.magex.json.model;
 
 public final class DataPair extends DataElement {
 
@@ -7,9 +7,9 @@ public final class DataPair extends DataElement {
 	private final DataElement value;
 	
 	public DataPair(String key, DataElement value) {
-		super(digest(key + ":" + value.mid()));
+		super(digest(validateKey(key) + ":" + (value == null ? DataElement.UNDEFINED.mid() : value.mid())));
 		this.key = key;
-		this.value = value;
+		this.value = value == null ? DataElement.UNDEFINED : value;
 	}
 	
 	public DataPair(String key, String value) {

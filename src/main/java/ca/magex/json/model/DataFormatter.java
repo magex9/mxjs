@@ -1,4 +1,4 @@
-package ca.magex.mxjs.model;
+package ca.magex.json.model;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

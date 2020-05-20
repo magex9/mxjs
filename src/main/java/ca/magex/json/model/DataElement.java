@@ -1,4 +1,4 @@
-package ca.magex.mxjs.model;
+package ca.magex.json.model;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -12,12 +12,20 @@ public class DataElement {
 		this.mid = digest(stringify(new DataFormatter(false)));
 	}
 	
-	public DataElement(String mid) {
+	protected DataElement(String mid) {
 		this.mid = mid;
 	}
 	
 	public final String mid() {
 		return mid;
+	}
+	
+	protected static final String validateKey(String key) {
+		if (key == null)
+			throw new IllegalArgumentException("Key cannot be null");
+		if (!key.matches("[A-Za-z0-9]{1,255}"))
+			throw new IllegalArgumentException("Invalid key: " + key);
+		return key;
 	}
 	
 	public static DataElement cast(Object el) {

@@ -1,11 +1,11 @@
-package ca.magex.crm.mapping.json;
+package ca.magex.json.model;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ca.magex.mxjs.model.DataFormatter;
-import ca.magex.mxjs.model.DataObject;
+import ca.magex.json.model.DataFormatter;
+import ca.magex.json.model.DataObject;
 
 public class DataObjectTest {
 
