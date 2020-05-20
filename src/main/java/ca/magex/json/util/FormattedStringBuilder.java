@@ -1,4 +1,4 @@
-package ca.magex.mxjs.util;
+package ca.magex.json.util;
 
 public class FormattedStringBuilder {
 

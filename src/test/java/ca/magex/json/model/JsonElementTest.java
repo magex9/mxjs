@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import ca.magex.mxjs.util.FormattedStringBuilder;
+import ca.magex.json.util.FormattedStringBuilder;
 
 public class JsonElementTest {
 
@@ -15,8 +15,8 @@ public class JsonElementTest {
 	public void testBasicDataElement() throws Exception {
 		JsonElement el = new JsonElement();
 		assertEquals(JsonElement.UNDEFINED, el);
-		assertEquals("abc", el.mid());
-		assertEquals("abc", new JsonElement().mid());
+		assertEquals("", el.mid());
+		assertEquals("", new JsonElement().mid());
 	}
 	
 	@Test
@@ -90,6 +90,16 @@ public class JsonElementTest {
 			return false;
 		}
 	}
+	
+	@Test
+	public void testNullElements() throws Exception {
+		assertEquals(JsonElement.UNDEFINED.mid(), new JsonText(null).mid());
+		assertEquals(JsonElement.UNDEFINED.mid(), new JsonNumber(null).mid());
+		assertEquals(JsonElement.UNDEFINED.mid(), new JsonBoolean(null).mid());
+		assertEquals(JsonElement.UNDEFINED.toString(), new JsonText(null).toString());
+		assertEquals(JsonElement.UNDEFINED.toString(), new JsonNumber(null).toString());
+		assertEquals(JsonElement.UNDEFINED.toString(), new JsonBoolean(null).toString());
+	}
 
 	@Test
 	public void testCastNull() throws Exception {
@@ -143,6 +153,83 @@ public class JsonElementTest {
 			JsonElement.cast(new FormattedStringBuilder());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
+	}
+	
+	@Test
+	public void testUnwrapNull() throws Exception {
+		assertNull(JsonElement.unwrap(null));
+	}
+	
+	@Test
+	public void testUnwrapJsonText() throws Exception {
+		assertEquals("text", JsonElement.unwrap(new JsonText("text")));
+		assertEquals(null, JsonElement.unwrap(new JsonText(null)));
+		assertEquals("Français", JsonElement.unwrap(new JsonText("Français")));
+	}
+	
+	@Test
+	public void testUnwrapJsonNumber() throws Exception {
+		assertEquals(10, JsonElement.unwrap(new JsonNumber(10)));
+		assertEquals(-10, JsonElement.unwrap(new JsonNumber(-10)));
+		assertEquals(0.005, JsonElement.unwrap(new JsonNumber(0.005)));
+		assertEquals(Long.MAX_VALUE, JsonElement.unwrap(new JsonNumber(Long.MAX_VALUE)));
+		assertEquals(Double.MIN_VALUE, JsonElement.unwrap(new JsonNumber(Double.MIN_VALUE)));
+	}
+	
+	@Test
+	public void testUnwrapBoolean() throws Exception {
+		assertEquals(true, JsonElement.unwrap(new JsonBoolean(true)));
+		assertEquals(false, JsonElement.unwrap(new JsonBoolean(false)));
+		assertEquals(true, JsonElement.unwrap(new JsonBoolean(Boolean.TRUE)));
+		assertEquals(false, JsonElement.unwrap(new JsonBoolean(Boolean.FALSE)));
+	}
+	
+	@Test
+	public void testUnwrapInvalid() throws Exception {
+		try {
+			JsonElement.unwrap(new Object());
+			fail("Invalid object");
+		} catch (IllegalArgumentException e) { }
+		try {
+			JsonElement.unwrap(new Date());
+			fail("Invalid object");
+		} catch (IllegalArgumentException e) { }
+		try {
+			JsonElement.unwrap(LocalDateTime.now());
+			fail("Invalid object");
+		} catch (IllegalArgumentException e) { }
+		try {
+			JsonElement.unwrap(new FormattedStringBuilder());
+			fail("Invalid object");
+		} catch (IllegalArgumentException e) { }
+	}
+	
+	@Test
+	public void testHashCode() throws Exception {
+		assertEquals(new JsonElement().hashCode(), new JsonElement().hashCode());
+		assertEquals(new JsonNumber(10).hashCode(), new JsonNumber(10).hashCode());
+		assertEquals(new JsonBoolean(true).hashCode(), new JsonBoolean(true).hashCode());
+		assertEquals(new JsonText("text").hashCode(), new JsonText("text").hashCode());
+		
+		assertNotEquals(new JsonNumber(10).hashCode(), new JsonNumber(-10).hashCode());
+		assertNotEquals(new JsonBoolean(true).hashCode(), new JsonBoolean(false).hashCode());
+		assertNotEquals(new JsonText("text").hashCode(), new JsonText("other").hashCode());
+	}
+	
+	@Test
+	public void testToStringBasics() throws Exception {
+		assertEquals("null", new JsonElement().toString());
+		assertEquals("10", new JsonNumber(10).toString());
+		assertEquals("true", new JsonBoolean(true).toString());
+		assertEquals("\"text\"", new JsonText("text").toString());
+	}
+	
+	@Test
+	public void testToStringify() throws Exception {
+		assertEquals("null", JsonFormatter.compact(new JsonElement()));
+		assertEquals("10", JsonFormatter.compact(new JsonNumber(10)));
+		assertEquals("true", JsonFormatter.compact(new JsonBoolean(true)));
+		assertEquals("\"text\"", JsonFormatter.compact(new JsonText("text")));
 	}
 	
 }

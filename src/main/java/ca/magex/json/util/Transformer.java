@@ -1,4 +1,4 @@
-package ca.magex.mxjs.util;
+package ca.magex.json.util;
 
 import ca.magex.json.model.JsonObject;
 

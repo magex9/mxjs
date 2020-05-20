@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ca.magex.json.model.JsonFormatter;
-import ca.magex.json.model.JsonObject;
-
 public class JsonObjectTest {
 
 	@Test

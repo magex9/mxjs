@@ -1,6 +1,8 @@
 package ca.magex.json.model;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class JsonElement {
 	
@@ -9,7 +11,7 @@ public class JsonElement {
 	private final String mid;
 
 	public JsonElement() {
-		this.mid = digest(stringify(new JsonFormatter(false)));
+		this.mid = digest(null);
 	}
 	
 	protected JsonElement(String mid) {
@@ -57,13 +59,19 @@ public class JsonElement {
 	}
 
 	public static final String digest(Object obj) {
-		if (obj == null || (obj instanceof String && ((String)obj).equals("null")))
+		if (obj == null)
 			return "";
 		return DigestUtils.md5Hex(obj.toString());
 	}
 	
-	public final String stringify(JsonFormatter formatter) {
-		return formatter.stringify(this);
+	@Override
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(this);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	@Override
