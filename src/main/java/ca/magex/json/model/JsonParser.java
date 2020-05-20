@@ -8,20 +8,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataParser {
+public class JsonParser {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DataParser.class);
+	private static final Logger logger = LoggerFactory.getLogger(JsonParser.class);
 
-	public static DataElement parse(String text) {
-		return new DataParser(text).parse();
+	public static JsonElement parse(String text) {
+		return new JsonParser(text).parse();
 	}
 	
-	public static DataObject parseObject(String text) {
-		return (DataObject)parse(text);
+	public static JsonObject parseObject(String text) {
+		return (JsonObject)parse(text);
 	}
 	
-	public static DataArray parseArray(String text) {
-		return (DataArray)parse(text);
+	public static JsonArray parseArray(String text) {
+		return (JsonArray)parse(text);
 	}
 	
 	private int index;
@@ -30,13 +30,13 @@ public class DataParser {
 	
 	private int length;
 	
-	private DataParser(String text) {
+	private JsonParser(String text) {
 		this.index = 0;
 		this.text = text;
 		this.length = text.length();
 	}
 	
-	private DataElement parse() {
+	private JsonElement parse() {
 		while (index < length) {
 			char c = getCurrentChar("parse");
 			if (isWhitespace(c)) {
@@ -49,28 +49,28 @@ public class DataParser {
 				return parseArray();
 			} else if (isQuote(c)) {
 				index++;
-				return new DataText(parseString());
+				return new JsonText(parseString());
 			} else if (isDigit(c)) {
-				return new DataNumber(parseNumber());
+				return new JsonNumber(parseNumber());
 			} else if (c == 't' && 
 					text.charAt(index + 1) == 'r' && 
 					text.charAt(index + 2) == 'u' && 
 					text.charAt(index + 3) == 'e') {
 				index += 4;
-				return new DataBoolean(true);
+				return new JsonBoolean(true);
 			} else if (c == 'f' && 
 					text.charAt(index + 1) == 'a' && 
 					text.charAt(index + 2) == 'l' && 
 					text.charAt(index + 3) == 's' && 
 					text.charAt(index + 4) == 'e') {
 				index += 5;
-				return new DataBoolean(false);
+				return new JsonBoolean(false);
 			} else if (c == 'n' && 
 					text.charAt(index + 1) == 'u' && 
 					text.charAt(index + 2) == 'l' && 
 					text.charAt(index + 3) == 'l') {
 				index += 4;
-				return new DataElement();
+				return new JsonElement();
 			} else {
 				throw new RuntimeException("Unepxected base value at index: " + index + " (" + elipse(index) + ")");
 			}
@@ -78,8 +78,8 @@ public class DataParser {
 		throw new RuntimeException("Unable to parse the data element: " + elipse(0));
 	}
 	
-	private DataObject parseObject() {
-		List<DataPair> pairs = new ArrayList<DataPair>();
+	private JsonObject parseObject() {
+		List<JsonPair> pairs = new ArrayList<JsonPair>();
 		while (index < length) {
 			char c = getCurrentChar("parseObject");
 			if (isWhitespace(c) || c == ',') {
@@ -89,7 +89,7 @@ public class DataParser {
 				return parseObject();
 			} else if (isCloseCurlyBracket(c)) {
 				index++;
-				return new DataObject(pairs);
+				return new JsonObject(pairs);
 			} else if (isQuote(c)) {
 				pairs.add(parsePair());
 			} else {
@@ -99,8 +99,8 @@ public class DataParser {
 		throw new RuntimeException("Object not terminated");
 	}
 	
-	private DataArray parseArray() {
-		List<DataElement> elements = new ArrayList<DataElement>();
+	private JsonArray parseArray() {
+		List<JsonElement> elements = new ArrayList<JsonElement>();
 		while (index < length) {
 			char c = getCurrentChar("parseArray");
 			if (isWhitespace(c) || c == ',') {
@@ -110,31 +110,31 @@ public class DataParser {
 				elements.add(parseObject());
 			} else if (isCloseSquareBracket(c)) {
 				index++;
-				return new DataArray(elements);
+				return new JsonArray(elements);
 			} else if (isQuote(c)) {
 				index++;
-				elements.add(new DataText(parseString()));
+				elements.add(new JsonText(parseString()));
 			} else if (isDigit(c)) {
-				elements.add(new DataNumber(parseNumber()));
+				elements.add(new JsonNumber(parseNumber()));
 			} else if (c == 't' && 
 					text.charAt(index + 1) == 'r' && 
 					text.charAt(index + 2) == 'u' && 
 					text.charAt(index + 3) == 'e') {
 				index += 4;
-				elements.add(new DataBoolean(true));
+				elements.add(new JsonBoolean(true));
 			} else if (c == 'f' && 
 					text.charAt(index + 1) == 'a' && 
 					text.charAt(index + 2) == 'l' && 
 					text.charAt(index + 3) == 's' && 
 					text.charAt(index + 4) == 'e') {
 				index += 5;
-				elements.add(new DataBoolean(false));
+				elements.add(new JsonBoolean(false));
 			} else if (c == 'n' && 
 					text.charAt(index + 1) == 'u' && 
 					text.charAt(index + 2) == 'l' && 
 					text.charAt(index + 3) == 'l') {
 				index += 4;
-				elements.add(new DataElement());
+				elements.add(new JsonElement());
 			} else {
 				throw new RuntimeException("Expected an element value at index: " + index + " (" + elipse(index) + ")");
 			}
@@ -142,7 +142,7 @@ public class DataParser {
 		throw new RuntimeException("Object not terminated");
 	}
 	
-	private DataPair parsePair() {
+	private JsonPair parsePair() {
 		String key = null;
 		while (index < length) {
 			char c = getCurrentChar("parsePair");
@@ -167,8 +167,8 @@ public class DataParser {
 				throw new RuntimeException("Expected a key at index: " + index + " (" + elipse(index) + ")");
 			}
 		}
-		DataElement value = parse();
-		return new DataPair(key, value);
+		JsonElement value = parse();
+		return new JsonPair(key, value);
 	}
 
 	private String parseKey() {

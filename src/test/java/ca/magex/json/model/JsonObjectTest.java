@@ -4,22 +4,22 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import ca.magex.json.model.DataFormatter;
-import ca.magex.json.model.DataObject;
+import ca.magex.json.model.JsonFormatter;
+import ca.magex.json.model.JsonObject;
 
-public class DataObjectTest {
+public class JsonObjectTest {
 
 	@Test
 	public void testEmptyArray() throws Exception {
-		DataObject data = new DataObject();
+		JsonObject data = new JsonObject();
 		assertEquals("{}", data.toString());
 		assertEquals(0, data.size());
 	}
 	
 	@Test
 	public void testStringConstructor() throws Exception {
-		DataObject data = new DataObject("{\"type\":1,\"test\":true,\"name\":\"test\"}");
-		assertEquals("{\"type\":1,\"test\":true,\"name\":\"test\"}", DataFormatter.compact(data));
+		JsonObject data = new JsonObject("{\"type\":1,\"test\":true,\"name\":\"test\"}");
+		assertEquals("{\"type\":1,\"test\":true,\"name\":\"test\"}", JsonFormatter.compact(data));
 		assertEquals("{\n" + 
 			"  \"type\": 1,\n" + 
 			"  \"test\": true,\n" + 

@@ -1,13 +1,13 @@
 package ca.magex.mxjs.util;
 
-import ca.magex.json.model.DataObject;
+import ca.magex.json.model.JsonObject;
 
 public interface Transformer<T extends Object> {
 	
 	public Class<T> getType();
 	
-	public DataObject format(T obj);
+	public JsonObject format(T obj);
 	
-	public T parse(DataObject data);
+	public T parse(JsonObject data);
 	
 }

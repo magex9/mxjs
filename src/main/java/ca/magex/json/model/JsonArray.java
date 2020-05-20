@@ -6,34 +6,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class DataArray extends DataElement {
+public final class JsonArray extends JsonElement {
 	
-	private final List<DataElement> elements;
+	private final List<JsonElement> elements;
 	
-	public DataArray() {
-		this(new ArrayList<DataElement>());
+	public JsonArray() {
+		this(new ArrayList<JsonElement>());
 	}
 	
-	public DataArray(String text) {
-		this(DataParser.parseArray(text).elements);
+	public JsonArray(String text) {
+		this(JsonParser.parseArray(text).elements);
 	}
 	
-	public DataArray(List<DataElement> elements) {
+	public JsonArray(List<JsonElement> elements) {
 		super(digest(elements.stream().map(e -> e.mid()).collect(Collectors.joining(","))));
 		this.elements = Collections.unmodifiableList(elements);
 	}
 	
-	public DataArray with(Object value) {
-		List<DataElement> values = new ArrayList<DataElement>(elements);
+	public JsonArray with(Object value) {
+		List<JsonElement> values = new ArrayList<JsonElement>(elements);
 		values.add(cast(value));
-		return new DataArray(values);
+		return new JsonArray(values);
 	}
 	
-	public Stream<DataElement> stream() {
+	public Stream<JsonElement> stream() {
 		return elements.stream();
 	}
 	
-	public List<DataElement> values() {
+	public List<JsonElement> values() {
 		return elements;
 	}
 	

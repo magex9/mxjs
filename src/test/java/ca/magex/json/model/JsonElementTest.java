@@ -9,32 +9,32 @@ import org.junit.Test;
 
 import ca.magex.mxjs.util.FormattedStringBuilder;
 
-public class DataElementTest {
+public class JsonElementTest {
 
 	@Test
 	public void testBasicDataElement() throws Exception {
-		DataElement el = new DataElement();
-		assertEquals(DataElement.UNDEFINED, el);
+		JsonElement el = new JsonElement();
+		assertEquals(JsonElement.UNDEFINED, el);
 		assertEquals("abc", el.mid());
-		assertEquals("abc", new DataElement().mid());
+		assertEquals("abc", new JsonElement().mid());
 	}
 	
 	@Test
 	public void testDataElementMid() throws Exception {
-		DataElement el = new DataElement("abc");
+		JsonElement el = new JsonElement("abc");
 		assertEquals("abc", el.mid());
 	}
 	
 	@Test
 	public void testValidatingKeys() throws Exception {
 		try {
-			DataElement.validateKey(null);
+			JsonElement.validateKey(null);
 			fail("Keys must be not null");
 		} catch (IllegalArgumentException e) {
 			assertEquals("Key cannot be null", e.getMessage());
 		}
 		try {
-			DataElement.validateKey("");
+			JsonElement.validateKey("");
 			fail("Keys must not be blank");
 		} catch (IllegalArgumentException e) { 
 			assertEquals("Invalid key: ", e.getMessage());
@@ -84,7 +84,7 @@ public class DataElementTest {
 	
 	public boolean isValidKey(String key) {
 		try {
-			DataElement.validateKey(key);
+			JsonElement.validateKey(key);
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;
@@ -93,54 +93,54 @@ public class DataElementTest {
 
 	@Test
 	public void testCastNull() throws Exception {
-		assertEquals(DataElement.UNDEFINED, DataElement.cast(null));
+		assertEquals(JsonElement.UNDEFINED, JsonElement.cast(null));
 	}
 	
 	@Test
 	public void testCastDataElement() throws Exception {
-		assertEquals(DataElement.class, DataElement.cast(DataElement.UNDEFINED).getClass());
-		assertEquals(DataText.class, DataElement.cast(new DataText("test")).getClass());
-		assertEquals(DataNumber.class, DataElement.cast(new DataNumber(10)).getClass());
-		assertEquals(DataBoolean.class, DataElement.cast(new DataBoolean(true)).getClass());
-		assertEquals(DataArray.class, DataElement.cast(new DataArray()).getClass());
+		assertEquals(JsonElement.class, JsonElement.cast(JsonElement.UNDEFINED).getClass());
+		assertEquals(JsonText.class, JsonElement.cast(new JsonText("test")).getClass());
+		assertEquals(JsonNumber.class, JsonElement.cast(new JsonNumber(10)).getClass());
+		assertEquals(JsonBoolean.class, JsonElement.cast(new JsonBoolean(true)).getClass());
+		assertEquals(JsonArray.class, JsonElement.cast(new JsonArray()).getClass());
 	}
 	
 	@Test
 	public void testCastNumber() throws Exception {
-		assertEquals(DataNumber.class, DataElement.cast(10).getClass());
-		assertEquals(DataNumber.class, DataElement.cast(0.05).getClass());
+		assertEquals(JsonNumber.class, JsonElement.cast(10).getClass());
+		assertEquals(JsonNumber.class, JsonElement.cast(0.05).getClass());
 	}
 	
 	@Test
 	public void testCastText() throws Exception {
-		assertEquals(DataText.class, DataElement.cast("Hello").getClass());
-		assertEquals(DataText.class, DataElement.cast("Français").getClass());
+		assertEquals(JsonText.class, JsonElement.cast("Hello").getClass());
+		assertEquals(JsonText.class, JsonElement.cast("Français").getClass());
 	}
 	
 	@Test
 	public void testCastBoolean() throws Exception {
-		assertEquals(DataBoolean.class, DataElement.cast(true).getClass());
-		assertEquals(DataBoolean.class, DataElement.cast(false).getClass());
-		assertEquals(DataBoolean.class, DataElement.cast(Boolean.TRUE).getClass());
-		assertEquals(DataBoolean.class, DataElement.cast(Boolean.FALSE).getClass());
+		assertEquals(JsonBoolean.class, JsonElement.cast(true).getClass());
+		assertEquals(JsonBoolean.class, JsonElement.cast(false).getClass());
+		assertEquals(JsonBoolean.class, JsonElement.cast(Boolean.TRUE).getClass());
+		assertEquals(JsonBoolean.class, JsonElement.cast(Boolean.FALSE).getClass());
 	}
 	
 	@Test
 	public void testCastInvalid() throws Exception {
 		try {
-			DataElement.cast(new Object());
+			JsonElement.cast(new Object());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
 		try {
-			DataElement.cast(new Date());
+			JsonElement.cast(new Date());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
 		try {
-			DataElement.cast(LocalDateTime.now());
+			JsonElement.cast(LocalDateTime.now());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
 		try {
-			DataElement.cast(new FormattedStringBuilder());
+			JsonElement.cast(new FormattedStringBuilder());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
 	}

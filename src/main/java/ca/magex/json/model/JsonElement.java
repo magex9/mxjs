@@ -2,17 +2,17 @@ package ca.magex.json.model;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-public class DataElement {
+public class JsonElement {
 	
-	public static final DataElement UNDEFINED = new DataElement();
+	public static final JsonElement UNDEFINED = new JsonElement();
 	
 	private final String mid;
 
-	public DataElement() {
-		this.mid = digest(stringify(new DataFormatter(false)));
+	public JsonElement() {
+		this.mid = digest(stringify(new JsonFormatter(false)));
 	}
 	
-	protected DataElement(String mid) {
+	protected JsonElement(String mid) {
 		this.mid = mid;
 	}
 	
@@ -28,17 +28,17 @@ public class DataElement {
 		return key;
 	}
 	
-	public static DataElement cast(Object el) {
+	public static JsonElement cast(Object el) {
 		if (el == null) {
-			return new DataElement();
-		} else if (el instanceof DataElement) {
-			return (DataElement)el;
+			return new JsonElement();
+		} else if (el instanceof JsonElement) {
+			return (JsonElement)el;
 		} else if (el instanceof String) {
-			return new DataText((String)el);
+			return new JsonText((String)el);
 		} else if (el instanceof Number) {
-			return new DataNumber((Number)el);
+			return new JsonNumber((Number)el);
 		} else if (el instanceof Boolean) {
-			return new DataBoolean((Boolean)el);
+			return new JsonBoolean((Boolean)el);
 		}
 		throw new IllegalArgumentException("Unsupported type of element to convert to a data element: " + el.getClass());
 	}
@@ -46,12 +46,12 @@ public class DataElement {
 	public static Object unwrap(Object el) {
 		if (el == null) {
 			return null;
-		} else if (el instanceof DataText) {
-			return ((DataText)el).value();
-		} else if (el instanceof DataNumber) {
-			return ((DataNumber)el).value();
-		} else if (el instanceof DataBoolean) {
-			return ((DataBoolean)el).value();
+		} else if (el instanceof JsonText) {
+			return ((JsonText)el).value();
+		} else if (el instanceof JsonNumber) {
+			return ((JsonNumber)el).value();
+		} else if (el instanceof JsonBoolean) {
+			return ((JsonBoolean)el).value();
 		}
 		throw new IllegalArgumentException("Unsupported type of element to unwrap: " + el.getClass());
 	}
@@ -62,13 +62,13 @@ public class DataElement {
 		return DigestUtils.md5Hex(obj.toString());
 	}
 	
-	public final String stringify(DataFormatter formatter) {
+	public final String stringify(JsonFormatter formatter) {
 		return formatter.stringify(this);
 	}
 
 	@Override
 	public final String toString() {
-		return new DataFormatter(true).stringify(this);
+		return new JsonFormatter(true).stringify(this);
 	}
 
 }
