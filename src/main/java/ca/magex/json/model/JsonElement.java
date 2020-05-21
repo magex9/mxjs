@@ -1,5 +1,9 @@
 package ca.magex.json.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -41,6 +45,10 @@ public class JsonElement {
 			return new JsonNumber((Number)el);
 		} else if (el instanceof Boolean) {
 			return new JsonBoolean((Boolean)el);
+		} else if (el instanceof LocalDate) {
+			return new JsonText(((LocalDate)el).format(DateTimeFormatter.ISO_DATE));
+		} else if (el instanceof LocalDateTime) {
+			return new JsonText(((LocalDateTime)el).format(DateTimeFormatter.ISO_DATE_TIME));
 		}
 		throw new IllegalArgumentException("Unsupported type of element to convert to a data element: " + el.getClass());
 	}

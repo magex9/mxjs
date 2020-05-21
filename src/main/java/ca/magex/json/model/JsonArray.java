@@ -1,5 +1,8 @@
 package ca.magex.json.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +40,46 @@ public final class JsonArray extends JsonElement {
 	
 	public List<JsonElement> values() {
 		return elements;
+	}
+	
+	public JsonElement get(int index) {
+		return elements.get(index);
+	}
+	
+	public JsonObject getObject(int index) {
+		return (JsonObject)get(index);
+	}
+	
+	public JsonArray getArray(int index) {
+		return (JsonArray)get(index);
+	}
+	
+	public String getString(int index) {
+		return ((JsonText)get(index)).value();
+	}
+	
+	public Integer getInt(int index) {
+		return ((JsonNumber)get(index)).value().intValue();
+	}
+	
+	public Long getLong(int index) {
+		return ((JsonNumber)get(index)).value().longValue();
+	}
+	
+	public Float getFloat(int index) {
+		return ((JsonNumber)get(index)).value().floatValue();
+	}
+	
+	public Boolean getBoolean(int index) {
+		return ((JsonBoolean)get(index)).value();
+	}
+	
+	public LocalDate getDate(int index) {
+		return LocalDate.parse(((JsonText)get(index)).value(), DateTimeFormatter.ISO_DATE);
+	}
+	
+	public LocalDateTime getDateTime(int index) {
+		return LocalDateTime.parse(((JsonText)get(index)).value(), DateTimeFormatter.ISO_DATE_TIME);
 	}
 	
 	public int size() {

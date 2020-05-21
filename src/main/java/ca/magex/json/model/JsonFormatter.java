@@ -10,11 +10,11 @@ import java.util.Stack;
 
 public class JsonFormatter {
 	
-	private static final byte[] INDENT = "  ".getBytes();
+	public static final byte[] INDENT = "  ".getBytes();
 	
-	private static final byte[] EOL = "\n".getBytes();
+	public static final byte[] EOL = "\n".getBytes();
 	
-	private static final byte[] BLANK = new byte[] { };
+	public static final byte[] BLANK = new byte[] { };
 
 	private static final Map<Integer, byte[]> prefixes = new HashMap<Integer, byte[]>();
 	
@@ -68,7 +68,8 @@ public class JsonFormatter {
 	}
 	
 	public JsonFormatter setIndentation(Integer indentation) {
-		this.indentation = indentation;
+		if (this.indentation != null)
+			this.indentation = indentation;
 		return this;
 	}
 	
@@ -77,26 +78,27 @@ public class JsonFormatter {
 	}
 	
 	public final String stringify(JsonElement data) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			stream(data, baos);
-		} catch (IOException e) {
-			throw new RuntimeException("Problem building string", e);
-		}
-		return baos.toString(StandardCharsets.UTF_8);
+		return ((ByteArrayOutputStream)stream(data, new ByteArrayOutputStream())).toString(StandardCharsets.UTF_8);
 	}
 	
-	public void stream(JsonElement data, OutputStream os) throws IOException {
+	public OutputStream stream(JsonElement data, OutputStream os) {
+		if (os == null)
+			throw new IllegalArgumentException("Unable to write to null OutputStream");
 		if (data.getClass().equals(JsonElement.class)) { 
-			os.write("null".getBytes());
+			try {
+				os.write("null".getBytes());
+			} catch (IOException e) {
+				throw new IllegalArgumentException("Unable to write to output stream: " + os.getClass(), e);
+			}
 		} else {
 			try {
 				getClass().getMethod("stream", new Class[] { data.getClass(), OutputStream.class })
 					.invoke(this, new Object[] { data, os });
 			} catch (Exception e) {
-				throw new IllegalArgumentException("Unable to find stream class for: " + data.getClass(), e);
+				throw new IllegalArgumentException("Unable to write to output stream: " + os.getClass(), e);
 			}
 		}
+		return os;
 	}
 	
 	public void stream(JsonText data, OutputStream os) throws IOException {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +31,7 @@ public final class JsonObject extends JsonElement {
 		super(digest(pairs.stream().map(e -> e.mid()).collect(Collectors.joining(","))));
 		this.pairs = Collections.unmodifiableList(pairs);
 		this.map = Collections.unmodifiableMap(pairs.stream().collect(Collectors.toMap(JsonPair::key, JsonPair::value)));
-		this.keys = pairs.stream().map(p -> p.key()).collect(Collectors.toList());
+		this.keys = pairs.stream().filter(p -> contains(p.key())).map(p -> p.key()).collect(Collectors.toList());
 	}
 	
 	public JsonObject with(String key, Object value) {
@@ -38,9 +39,25 @@ public final class JsonObject extends JsonElement {
 	}
 	
 	public JsonObject with(JsonPair pair) {
-		List<JsonPair> values = new ArrayList<JsonPair>(pairs);
-		values.add(pair);
+		List<JsonPair> values = new ArrayList<JsonPair>();
+		boolean found = false;
+		for (int i = 0; i < pairs.size(); i++) {
+			JsonPair p = pairs.get(i);
+			if (p.key().equals(pair.key())) {
+				values.add(pair);
+				found = true;
+			} else {
+				values.add(p);
+			}
+		}
+		if (!found)
+			values.add(pair);
 		return new JsonObject(values);
+	}
+	
+	public JsonObject remove(String key) {
+		return new JsonObject(new ArrayList<JsonPair>(pairs.stream()
+			.filter(p -> !p.key().contentEquals(key)).collect(Collectors.toList())));
 	}
 	
 	public Stream<JsonPair> stream() {
@@ -68,55 +85,53 @@ public final class JsonObject extends JsonElement {
 	}
 	
 	public int size() {
-		return map.size();
+		return keys.size();
 	}
 	
 	public boolean isEmpty() {
-		return map.isEmpty();
+		return keys.isEmpty();
 	}
 	
 	public JsonElement get(String key) {
+		if (!contains(key))
+			throw new NoSuchElementException("Unable to find: " + key);
 		return map.get(key);
 	}
 	
 	public JsonObject getObject(String key) {
-		return ((JsonObject)map.get(key));
+		return ((JsonObject)get(key));
 	}
 
 	public JsonArray getArray(String key) {
-		return ((JsonArray)map.get(key));
+		return ((JsonArray)get(key));
 	}
 
 	public String getString(String key) {
-		try {
-			return ((JsonText)map.get(key)).value();
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e);
-		}
+		return ((JsonText)get(key)).value();
 	}
 	
 	public Integer getInt(String key) {
-		return ((JsonNumber)map.get(key)).value().intValue();
+		return ((JsonNumber)get(key)).value().intValue();
 	}
 	
 	public Long getLong(String key) {
-		return ((JsonNumber)map.get(key)).value().longValue();
+		return ((JsonNumber)get(key)).value().longValue();
 	}
 	
 	public Float getFloat(String key) {
-		return ((JsonNumber)map.get(key)).value().floatValue();
+		return ((JsonNumber)get(key)).value().floatValue();
 	}
 	
 	public Boolean getBoolean(String key) {
-		return ((JsonBoolean)map.get(key)).value();
+		return ((JsonBoolean)get(key)).value();
 	}
 	
 	public LocalDate getDate(String key) {
-		return LocalDate.parse(((JsonText)map.get(key)).value(), DateTimeFormatter.ISO_DATE);
+		return LocalDate.parse(((JsonText)get(key)).value(), DateTimeFormatter.ISO_DATE);
 	}
 	
 	public LocalDateTime getDateTime(String key) {
-		return LocalDateTime.parse(((JsonText)map.get(key)).value(), DateTimeFormatter.ISO_DATE_TIME);
+		return LocalDateTime.parse(((JsonText)get(key)).value(), DateTimeFormatter.ISO_DATE_TIME);
 	}
 	
 }

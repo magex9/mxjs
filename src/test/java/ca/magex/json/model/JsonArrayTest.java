@@ -1,9 +1,10 @@
 package ca.magex.json.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -57,6 +58,26 @@ public class JsonArrayTest {
 		
 		assertEquals(compact, JsonFormatter.compact(JsonParser.parseArray(compact)));
 		assertEquals(formatted, JsonFormatter.formatted(JsonParser.parseArray(compact)));
+	}
+	
+	@Test
+	public void testStreamingElements() throws Exception {
+		JsonArray list = new JsonArray().with("a", 3, "b", true);
+		assertEquals(List.of("a", "b"), list.stream()
+				.filter(e -> e instanceof JsonText)
+				.map(e -> ((JsonText)e).value()).collect(Collectors.toList()));
+	}
+	
+	@Test
+	public void testArraySize() throws Exception {
+		assertEquals(0, new JsonArray().size());
+		assertEquals(3, new JsonArray().with(1, 2, 3).size());
+	}
+	
+	@Test
+	public void testEmptyList() throws Exception {
+		assertTrue(new JsonArray().isEmpty());
+		assertFalse(new JsonArray().with(1, 2, 3).isEmpty());
 	}
 	
 }

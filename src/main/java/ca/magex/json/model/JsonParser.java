@@ -3,9 +3,11 @@ package ca.magex.json.model;
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -55,6 +57,18 @@ public class JsonParser {
 	
 	public static String readFile(File file) throws FileNotFoundException, IOException {
 		return readInputStream(new FileInputStream(file));
+	}
+	
+	public static File writeFile(File file, String content) throws IOException {
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.append(content);
+		} finally {
+			if (writer != null)
+				writer.close();
+		}
+		return file;
 	}
 	
 	public static String readUrl(String url) throws MalformedURLException, IOException {

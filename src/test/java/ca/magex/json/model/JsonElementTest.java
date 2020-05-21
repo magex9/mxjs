@@ -51,8 +51,8 @@ public class JsonElementTest {
 	}
 	
 	@Test
-	public void testAmountKey() throws Exception {
-		assertFalse(isValidKey("$100"));
+	public void testRefKey() throws Exception {
+		assertTrue(isValidKey("$ref"));
 	}
 
 	@Test
@@ -143,10 +143,6 @@ public class JsonElementTest {
 		} catch (IllegalArgumentException e) { }
 		try {
 			JsonElement.cast(new Date());
-			fail("Invalid object");
-		} catch (IllegalArgumentException e) { }
-		try {
-			JsonElement.cast(LocalDateTime.now());
 			fail("Invalid object");
 		} catch (IllegalArgumentException e) { }
 		try {
