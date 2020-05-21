@@ -2,9 +2,19 @@ package ca.magex.json.model;
 
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +26,63 @@ public class JsonParser {
 		return new JsonParser(text).parse();
 	}
 	
+	public static JsonElement parse(InputStream is) throws IOException {
+		return parse(readInputStream(is));
+	}
+	
+	public static JsonElement parse(File file) throws FileNotFoundException, IOException {
+		return parse(new FileInputStream(file));
+	}
+	
+	public static String readInputStream(InputStream is) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				sb.append(line);
+				sb.append("\n");
+			}
+		} finally {
+			if (reader != null)
+				reader.close();
+			if (is != null)	
+				is.close();
+		}
+		return StringUtils.chomp(sb.toString());
+	}
+	
+	public static String readFile(File file) throws FileNotFoundException, IOException {
+		return readInputStream(new FileInputStream(file));
+	}
+	
+	public static String readUrl(String url) throws MalformedURLException, IOException {
+		return readInputStream(new URL(url).openStream());
+	}
+	
 	public static JsonObject parseObject(String text) {
 		return (JsonObject)parse(text);
 	}
 	
+	public static JsonObject parseObject(InputStream is) throws IOException {
+		return (JsonObject)parse(is);
+	}
+	
+	public static JsonObject parseObject(File file) throws FileNotFoundException, IOException {
+		return (JsonObject)parse(file);
+	}
+	
 	public static JsonArray parseArray(String text) {
 		return (JsonArray)parse(text);
+	}
+	
+	public static JsonArray parseArray(InputStream is) throws IOException {
+		return (JsonArray)parse(is);
+	}
+	
+	public static JsonArray parseArray(File file) throws FileNotFoundException, IOException {
+		return (JsonArray)parse(file);
 	}
 	
 	private int index;

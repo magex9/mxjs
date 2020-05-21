@@ -23,10 +23,12 @@ public final class JsonArray extends JsonElement {
 		this.elements = Collections.unmodifiableList(elements);
 	}
 	
-	public JsonArray with(Object value) {
-		List<JsonElement> values = new ArrayList<JsonElement>(elements);
-		values.add(cast(value));
-		return new JsonArray(values);
+	public JsonArray with(Object... values) {
+		List<JsonElement> updated = new ArrayList<JsonElement>(elements);
+		for (Object value : values) {
+			updated.add(cast(value));
+		}
+		return new JsonArray(updated);
 	}
 	
 	public Stream<JsonElement> stream() {

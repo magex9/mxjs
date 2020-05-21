@@ -25,7 +25,7 @@ public class JsonElement {
 	protected static final String validateKey(String key) {
 		if (key == null)
 			throw new IllegalArgumentException("Key cannot be null");
-		if (!key.matches("[A-Za-z0-9]{1,255}"))
+		if (!key.matches("[\\@\\$A-Za-z0-9]{1,255}"))
 			throw new IllegalArgumentException("Invalid key: " + key);
 		return key;
 	}
