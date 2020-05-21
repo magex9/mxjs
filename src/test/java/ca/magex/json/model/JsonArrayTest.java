@@ -2,6 +2,8 @@ package ca.magex.json.model;
 
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,6 +80,26 @@ public class JsonArrayTest {
 	public void testEmptyList() throws Exception {
 		assertTrue(new JsonArray().isEmpty());
 		assertFalse(new JsonArray().with(1, 2, 3).isEmpty());
+	}
+	
+	@Test
+	public void testGetByIndex() throws Exception {
+		LocalDate date = LocalDate.now();
+		LocalDateTime datetime = LocalDateTime.now();
+		JsonObject object = new JsonObject();
+		JsonArray array = new JsonArray();
+		JsonArray list = new JsonArray().with("a", 1, 2L, 3f, true, date, datetime, object, array);
+		assertEquals("a", list.getString(0));
+		assertEquals(Integer.valueOf(1), list.getInt(1));
+		assertEquals(Long.valueOf(2), list.getLong(2));
+		assertEquals(Float.valueOf(3), list.getFloat(3));
+		assertEquals(true, list.getBoolean(4));
+		assertEquals(date, list.getDate(5));
+		assertEquals(datetime, list.getDateTime(6));
+		assertEquals(object, list.getObject(7));
+		assertEquals(array, list.getArray(8));
+		
+		
 	}
 	
 }

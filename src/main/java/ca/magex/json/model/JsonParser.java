@@ -11,8 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +35,8 @@ public class JsonParser {
 	}
 	
 	public static String readInputStream(InputStream is) throws IOException {
+		if (is == null)
+			throw new IOException("Cannot read a null input stream");
 		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = null;
 		try {
@@ -47,10 +47,8 @@ public class JsonParser {
 				sb.append("\n");
 			}
 		} finally {
-			if (reader != null)
-				reader.close();
-			if (is != null)	
-				is.close();
+			reader.close();
+			is.close();
 		}
 		return StringUtils.chomp(sb.toString());
 	}
@@ -65,14 +63,9 @@ public class JsonParser {
 			writer = new BufferedWriter(new FileWriter(file));
 			writer.append(content);
 		} finally {
-			if (writer != null)
-				writer.close();
+			writer.close();
 		}
 		return file;
-	}
-	
-	public static String readUrl(String url) throws MalformedURLException, IOException {
-		return readInputStream(new URL(url).openStream());
 	}
 	
 	public static JsonObject parseObject(String text) {
@@ -150,7 +143,7 @@ public class JsonParser {
 				throw new RuntimeException("Unepxected base value at index: " + index + " (" + elipse(index) + ")");
 			}
 		}
-		throw new RuntimeException("Unable to parse the data element: " + elipse(0));
+		throw new RuntimeException("Unable to parse empty text");
 	}
 	
 	private JsonObject parseObject() {
@@ -159,9 +152,6 @@ public class JsonParser {
 			char c = getCurrentChar("parseObject");
 			if (isWhitespace(c) || c == ',') {
 				index++;
-			} else if (isOpenCurlyBracket(c)) {
-				index++;
-				return parseObject();
 			} else if (isCloseCurlyBracket(c)) {
 				index++;
 				return new JsonObject(pairs);
